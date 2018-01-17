@@ -2,7 +2,7 @@ const eventproxy = require('eventproxy'),
     superagent = require('superagent'),
     cheerio = require('cheerio'),
     url = require('url')
-const targetUrl = 'https://cnodejs.org/'
+const targetUrl = 'https://nba.hupu.com/stats/players/pts'
 
 superagent.get(targetUrl)
     .end((err, res) => {
@@ -11,9 +11,8 @@ superagent.get(targetUrl)
         }
         let urls =  []
         let $ = cheerio.load(res.text)
-        console.log($('#topic_list .topic_title'))
-        $('#topic_list .topic_title').each((index, element) => {
-            let href = url.resolve(targetUrl, $(element).attr('href'))
+        $('.players_table .left a').each((index, element) => {
+            let href = $(element).attr('href')
             urls.push(href)
         })
         console.log(urls)
