@@ -1,7 +1,7 @@
 const eventproxy = require('eventproxy'),
-      superagent = require('superagent'),
-      cheerio = require('cheerio'),
-      targetUrl = 'https://nba.hupu.com/stats/players/pts'
+    superagent = require('superagent'),
+    cheerio = require('cheerio'),
+    targetUrl = 'https://nba.hupu.com/stats/players/pts'
 
 superagent.get(targetUrl)
     .end((err, res) => {
@@ -16,9 +16,7 @@ superagent.get(targetUrl)
         // console.log(urls)
 
         let ep = new eventproxy()
-        ep.after('render',urls.length, playerList => {
-            //排序
-            playerList = playerList.sort((a,b) => Number(b.score) - Number(a.score))
+        ep.after('render', urls.length, playerList => {
             playerList = playerList.map(player => {
                 let $ = cheerio.load(player)
                 return {
@@ -27,17 +25,18 @@ superagent.get(targetUrl)
                     money: $('.content_a .font p').eq(8).text().split('：')[1]
                 }
             })
+            //排序
+            playerList.sort((a, b) => Number(b.score) - Number(a.score))
             console.log(playerList)
         })
 
         urls.forEach(url => {
             superagent.get(url)
-                .end((err,res) => {
-                    if(err){
+                .end((err, res) => {
+                    if (err) {
                         console.log(err)
                     }
-                    ep.emit('render',res.text)
+                    ep.emit('render', res.text)
                 })
         })
     })
-
